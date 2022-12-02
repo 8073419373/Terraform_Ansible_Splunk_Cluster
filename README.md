@@ -49,11 +49,11 @@ Ansible is an open-source software provisioning, configuration management, and d
 
 * Defining AWS VPC
 
- ```
- # Create a VPC to launch
-resource "aws_vpc" "default" {
-  cidr_block = "10.0.0.0/16"
-}
+  ```
+  # Create a VPC to launch
+   resource "aws_vpc" "default" {
+     cidr_block = "10.0.0.0/16"
+  }
   ```
 
 **Step 4:- Creating Internet Gateway**
