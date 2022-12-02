@@ -12,3 +12,12 @@ Terraform is a free and open-source infrastructure as code (IAC) that can help t
 Ansible is an open-source software provisioning, configuration management, and deployment tool. It runs on many Unix-like systems and can configure both Unix-like systems as well as Microsoft Windows. Ansible uses SSH protocol in order to configure the remote servers. Ansible follows the push-based mechanism to configure the remote servers.
 
 ![3](https://github.com/DhruvinSoni30/Jenkins-Ansible-Demo/blob/main/3.png?raw=true)
+
+### Prerequisites:
+
+* A server that has Terraform & Ansible installed in it
+* Basic understanding of Terraform & Ansible
+* Basic understanding of AWS
+* AWS Access Key & Secret Key
+
+* For this tutorial we will use terraform to spin up various instances and install splunk in it & ansible to configure the clustering!
