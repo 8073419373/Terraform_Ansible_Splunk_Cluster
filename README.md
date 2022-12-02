@@ -33,7 +33,9 @@ Ansible is an open-source software provisioning, configuration management, and d
   ```
   The above command will ask you to enter the Access key, secret key, output format and default region, please provide all the details
 
-**Step 2:- Create Provider block**
+**Step 2:- Creating Provider block**
+
+* Defining AWS region
   
   ```
   provider "aws" {
@@ -43,7 +45,9 @@ Ansible is an open-source software provisioning, configuration management, and d
 
 **Step 3:- Creating AWS VPC**
 
-  ```
+* Defining AWS VPC
+
+ ```
  # Create a VPC to launch
 resource "aws_vpc" "default" {
   cidr_block = "10.0.0.0/16"
@@ -52,6 +56,8 @@ resource "aws_vpc" "default" {
 
 **Step 4:- Creating Internet Gateway**
 
+* Defining AWS IGW
+
   ```
   resource "aws_internet_gateway" "demogateway" {
     vpc_id = "${aws_vpc.demovpc.id}"
@@ -59,6 +65,8 @@ resource "aws_vpc" "default" {
   ```
 
 **Step 5:- Updating the AWS Route Table**
+
+* Updating AWS Route Table
 
   ```
   resource "aws_route" "internet_access" {
@@ -70,6 +78,8 @@ resource "aws_vpc" "default" {
 
 **Step 6:- Creating AWS Subnet**
 
+* Defining AWS Subnet for Cluster Master, Indexers, SearchHeads & Forwarders!
+
   ```
   # Create a subnet to launch our instances into
 resource "aws_subnet" "default" {
@@ -79,14 +89,17 @@ resource "aws_subnet" "default" {
 }
 
 # Create a subnet to launch our instances into (For forwarder)
+
 resource "aws_subnet" "forwarder" {
   vpc_id                  = "${aws_vpc.demovpc.id}"
-  cidr_block              = "10.0.2.0/24"
+  cidr_block               "10.0.2.0/24"
   map_public_ip_on_launch = true
 }
   ```
 
 **Step 7:- Creating Inbound AWS Security Group for ELB**
+
+* Defining AWS Security Group for ELB
 
   ```
   # A security group for the ELB so it is accessible via the web
@@ -122,6 +135,8 @@ resource "aws_security_group" "elb" {
 
 **Step 8:- Creating Inbound AWS Security Group for Instances**
   
+* Defining AWS Security Group for Instances
+
   ```
   # Our default security group to access
 # the instances over SSH and HTTP
@@ -201,6 +216,8 @@ resource "aws_security_group" "default" {
 
 **Step 9:- Creating key pair for AWS EC2 Instance**
 
+* Defining AWS Key Pair
+
   ```
   resource "aws_key_pair" "demokey" {
     key_name   = "${var.key_name}"
@@ -210,6 +227,8 @@ resource "aws_security_group" "default" {
   
 
 **Step 10:- Creating instance for Cluster Master & install splunk in it**
+
+* Defining AWS Instance for Cluster Master
 
   ```
   #MasterSetup
@@ -275,6 +294,8 @@ resource "aws_instance" "master" {
 
 **Step 11:- Creating Instances for Indexers & install splunk in it**
 
+* Defining AWS Instance for Indexers
+
   ```
   #IndexerSetup
 resource "aws_instance" "indexer" {
@@ -324,6 +345,8 @@ resource "aws_instance" "indexer" {
 ```
 
 **Step 12:- Creating instances for SearchHeads & install Splunk it**
+
+* Defining AWS Instance for SearchHeads
 
   ```
   #SearchHeadSetup
@@ -388,6 +411,8 @@ resource "aws_instance" "search" {
 ```
 
 **Step 13:- Creating instances for Forwarders & install splunk in it**
+
+* Defining AWS Instance for Forwarders
 
   ```
   #ForwarderSetup
