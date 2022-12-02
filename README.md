@@ -469,3 +469,110 @@ Above command will create below resources in AWS
 
 ![4](https://github.com/DhruvinSoni30/Terraform_Ansible_Splunk_Cluster/blob/main/images/1.png)
 
+# Part 2(Ansible)
+
+**Step 1:- Creating AWS inventory file**
+
+* Create `aws_ec2.yaml` file and add below code in it
+
+  ```
+  plugin: aws_ec2
+  regions:
+    - "us-east-2"
+  keyed_groups:
+    - key: tags.Name
+      prefix: tag_Name
+  filters:
+    instance-state-name : running
+  compose:
+    ansible_host: public_ip_address
+  ```
+  
+  The above code will fetch all the EC2 instances which are in running state in `us-est-2` region
+
+**Step 2:- Creating configure file for Ansible**
+
+* Create `ansible.cfg` file and add below code in it
+
+  ```
+  [defaults]
+  enable_plugins=aws_ec2
+  private_key_file = ~/.ssh/id_rsa
+  ```
+  
+**Step 2:- Creating file for clustering**
+
+* Create `cluster.yaml` file and add below code in it 
+
+  ```
+  ---
+  - hosts: tag_Name_master
+    user: ec2-user
+    gather_facts: True
+    become: yes
+    become_method: sudo
+    tasks:
+      - name: master_ip
+        set_fact:
+          master: "{{ hostvars[inventory_hostname]['ansible_host'] | to_json }}"
+      - name: master
+        shell: /home/ec2-user/splunk/bin/splunk edit cluster-config -mode master -replication_factor 2 -search_factor 2 -secret 66546654 -auth admin:66546654 ; /home/ec2-user/splunk/bin/splunk restart ;
+      - name: pause
+        pause:
+          minutes: 1
+
+  - hosts: tag_Name_indexer*
+    user: ec2-user
+    become: yes
+    become_method: sudo
+    tasks:
+      - name: master_ip
+        set_fact:
+          master: "{{ hostvars[groups['tag_Name_master'][0]]['ansible_host'] | to_json }}"
+      - name: Indexer
+        shell: /home/ec2-user/splunk/bin/splunk edit cluster-config -mode slave -master_uri https://"{{master}}":8089 -replication_port 4598 -secret 66546654 -auth admin:66546654 ; /home/ec2-user/splunk/bin/splunk restart ;
+    gather_facts: True
+
+  - hosts: tag_Name_search*
+    user: ec2-user
+    gather_facts: True
+    become: yes
+    become_method: sudo
+    tasks:
+      - name: master_ip
+        set_fact:
+          master: "{{ hostvars[groups['tag_Name_master'][0]]['ansible_host'] | to_json }}"
+      - name: Search Head
+        shell: /home/ec2-user/splunk/bin/splunk edit cluster-config -mode searchhead -master_uri https://"{{master}}":8089 -secret 66546654 -auth admin:66546654 ; /home/ec2-user/splunk/bin/splunk restart ;
+
+  - hosts: tag_Name_forwarder*
+    user: ec2-user
+    gather_facts: True
+    become: yes
+    become_method: sudo
+    tasks:
+      - name: indexer_ip_1
+        set_fact:
+          indexer1: "{{ hostvars[groups['tag_Name_indexer1'][0]]['ansible_host'] | to_json }}"
+      - name: indexer_ip_2
+        set_fact:
+          indexer2: "{{ hostvars[groups['tag_Name_indexer2'][0]]['ansible_host'] | to_json }}"
+      - name: indexer1
+        shell: /home/ec2-user/splunkforwarder/bin/splunk add forward-server {indexer1}:9997 ; /home/ec2-user/splunkforwarder/bin/splunk restart ;
+      - name: indexer2
+        shell: /home/ec2-user/splunkforwarder/bin/splunk add forward-server {indexer2}:9997 ; /home/ec2-user/splunkforwarder/bin/splunk restart ;
+  ```
+  
+  Run below command to list all the details of instances
+  ```
+  ansible-inventory -i aws_ec2.yaml --list
+  ```
+  
+  Run below command to create the indexer clustering
+  ```
+  ansible-playbook -i aws_ec2.yaml -u ec2-user cluster.yaml
+  ```
+
+  The above commands will create indexer clustering and will add all the indexers as the forwarding server for forwarders
+  
+  ![5](https://github.com/DhruvinSoni30/Terraform_Ansible_Splunk_Cluster/blob/main/images/2.png)
