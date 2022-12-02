@@ -500,7 +500,7 @@ Above command will create below resources in AWS
   private_key_file = ~/.ssh/id_rsa
   ```
   
-**Step 2:- Creating file for clustering**
+**Step 3:- Creating file for clustering**
 
 * Create `cluster.yaml` file and add below code in it 
 
