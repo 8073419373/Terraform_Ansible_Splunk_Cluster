@@ -467,5 +467,5 @@ Run below commands to spin up the various resources of AWS
  
 Above command will create below resources in AWS
 
-
+![4](https://github.com/DhruvinSoni30/Terraform_Ansible_Splunk_Cluster/blob/main/images/1.png)
 
