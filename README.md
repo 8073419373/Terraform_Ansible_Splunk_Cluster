@@ -576,3 +576,5 @@ Above command will create below resources in AWS
   The above commands will create indexer clustering and will add all the indexers as the forwarding server for forwarders
   
   ![5](https://github.com/DhruvinSoni30/Terraform_Ansible_Splunk_Cluster/blob/main/images/2.png)
+
+  That's it! Our setup is ready!
