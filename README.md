@@ -1,1 +1,2 @@
-# Terraform_Ansible_Splunk_Cluster
+# A complete guid to setup Splunk Clustering using Ansible & Terraform!
+
