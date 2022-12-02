@@ -22,6 +22,8 @@ Ansible is an open-source software provisioning, configuration management, and d
 
 ### For this tutorial we will use terraform to spin up various instances and install splunk in it & ansible to configure the clustering!
 
+# Part 1 (Terraform)
+
 > We will use separate variables file for storing all the variables. So, at the end I will discuss that file also.
 
 **Step 1:- Configure AWS credentials**
@@ -455,3 +457,15 @@ resource "aws_vpc" "default" {
     }
   }
   ```
+
+Run below commands to spin up the various resources of AWS
+  ```
+  terraform init
+  terraform plan
+  terraform apply
+  ```
+ 
+Above command will create below resources in AWS
+
+
+
